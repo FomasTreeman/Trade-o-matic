@@ -1,13 +1,12 @@
 package dev.fomastree;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+import dev.fomastree.frontend.HelloFX;
+
+public class App {
+
+    public static void main(String[] args) {
+        new HelloFX();
+        System.exit(0);
     }
+
 }

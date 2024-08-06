@@ -14,7 +14,7 @@ public class Alpaca {
 
         Request request = new Request.Builder()
                 .url(
-                        "https://data.alpaca.markets/v2/stocks/bars?symbols=" + symbol.toLowerCase() + "&timeframe=1min&start=2022-01-03T00%3A00%3A00Z&limit=1000&adjustment=raw&feed=sip&currency=GBP&sort=asc")
+                        "https://data.alpaca.markets/v2/stocks/" + symbol.toLowerCase() + "/bars?timeframe=1D&start=2023-08-01T00%3A00%3A00Z&end=2024-08-01T00%3A00%3A00Z&limit=1000&adjustment=raw&feed=sip&currency=GBP&sort=asc")
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("APCA-API-KEY-ID", "System.getenv("APCA_API_KEY_ID")")
@@ -28,7 +28,7 @@ public class Alpaca {
                 System.out.println(
                         "Request was successful. " + response.code());
                 String jsonString = response.body().string();
-                JSON.write(jsonString, "historical-data/" + symbol + ".json");
+                JSON.write(jsonString, "historical-data/" + symbol);
                 System.out.println("Wrote to file");
             } else {
                 System.out.println(

@@ -1,16 +1,15 @@
 package dev.fomastree.backend;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonStreamParser;
+import com.google.gson.JsonObject;
 
-import dev.fomastree.strategies.Strategy;
-import dev.fomastree.strategies.StrategyFactory;
-
-import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Utility class for writing JSON data to a file.
@@ -22,34 +21,34 @@ public class JSON {
      *
      * @param filePath The file path where the JSON data will be written.
      */
-    public static void readBatchedJSON(String share, String strategy) {
-        final int BATCH_SIZE = 1000;
-        
-        try (FileReader fileReader = new FileReader("historical-data/" + share + ".json")) {
-            JsonStreamParser parser = new JsonStreamParser(fileReader);
+    public static JsonArray readJSON(String symbol, String key) {
 
-            List<Double> currentBatch = new ArrayList<>();
-            int count = 0;
+        try {
+            // create Gson instance
+            Gson gson = new Gson();
 
-            while (parser.hasNext()) {
-                JsonElement element = parser.next();
-                double value = element.getAsDouble();
-                currentBatch.add(value);
-                count++;
+            // create a reader
+            BufferedReader reader = Files.newBufferedReader(Paths.get("historical-data/" + symbol + ".json"));
 
-                if (count == BATCH_SIZE) {
-                    Strategy strategyInstance = new StrategyFactory().useStrategy(strategy);
-                    strategyInstance.execute(currentBatch);
-                    currentBatch.clear();
-                    count = 0;
-                }
+            // convert JSON file to map
+            JsonElement jsonElement = gson.fromJson(reader, JsonElement.class);
+
+            if (jsonElement.isJsonObject()) {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                JsonArray array = jsonObject.getAsJsonArray(key);
+                
+                return array;
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+            // close reader
+            reader.close();
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return new JsonArray();
+    }
 
     /**
      * Writes JSON data to the specified file path.
@@ -57,13 +56,13 @@ public class JSON {
      * @param jsonData The JSON data to write.
      * @param filePath The file path where the JSON data will be written.
      */
-    public static void write(String jsonData, String share) {
+    public static void write(String jsonData, String filepath) {
         if (jsonData == null) {
             throw new IllegalArgumentException(
                     "JSON data and file path cannot be null.");
         }
 
-        try (FileWriter fileWriter = new FileWriter("historical-data/" + share + ".json")) {
+        try (FileWriter fileWriter = new FileWriter(filepath + ".json", false)) {
             fileWriter.write(jsonData);
         } catch (IOException e) {
             System.err.println(

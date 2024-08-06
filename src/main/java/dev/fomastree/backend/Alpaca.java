@@ -14,13 +14,14 @@ public class Alpaca {
 
         Request request = new Request.Builder()
                 .url(
-                        "https://data.alpaca.markets/v2/stocks/" + symbol.toLowerCase() + "/bars?timeframe=1D&start=2023-08-01T00%3A00%3A00Z&end=2024-08-01T00%3A00%3A00Z&limit=1000&adjustment=raw&feed=sip&currency=GBP&sort=asc")
+                        "https://data.alpaca.markets/v2/stocks/" + symbol.toLowerCase()
+                                + "/bars?timeframe=1D&start=2023-08-01T00%3A00%3A00Z&end=2024-08-01T00%3A00%3A00Z&limit=1000&adjustment=raw&feed=sip&currency=GBP&sort=asc")
                 .get()
                 .addHeader("accept", "application/json")
-                .addHeader("APCA-API-KEY-ID", "System.getenv("APCA_API_KEY_ID")")
+                .addHeader("APCA-API-KEY-ID", System.getenv("APCA_API_KEY_ID"))
                 .addHeader(
                         "APCA-API-SECRET-KEY",
-                        "System.getenv("APCA_API_SECRET_KEY")")
+                        System.getenv("APCA_API_SECRET_KEY"))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -45,11 +46,11 @@ public class Alpaca {
     }
 
     // private static class DateTimeUtils {
-    //     public static String getCurrentDateTimeSmallFormat() {
-    //         LocalDateTime currentDateTime = LocalDateTime.now();
-    //         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-    //                 "MM-dd-yy-HH:mm:ss");
-    //         return currentDateTime.format(formatter);
-    //     }
+    // public static String getCurrentDateTimeSmallFormat() {
+    // LocalDateTime currentDateTime = LocalDateTime.now();
+    // DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+    // "MM-dd-yy-HH:mm:ss");
+    // return currentDateTime.format(formatter);
+    // }
     // }
 }
